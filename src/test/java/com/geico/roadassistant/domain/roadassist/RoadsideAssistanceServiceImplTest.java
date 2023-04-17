@@ -22,7 +22,7 @@ class RoadsideAssistanceServiceImplTest {
 
     @Test
     void testUpdateAssistantLocation() {
-        Assistant assistant = new Assistant("Jim", new Geolocation(34.0204, -84.1713));
+        Assistant assistant = new Assistant("Sarah", new Geolocation(34.0204, -84.1713));
         Geolocation location = new Geolocation(34.0204, -84.1713);
         service.updateAssistantLocation(assistant, location);
 
@@ -30,31 +30,25 @@ class RoadsideAssistanceServiceImplTest {
     }
 
     @Test
-    void testFindNearestAssistants() {
-        Assistant assistant1 = new Assistant("David", new Geolocation(34.0204, -84.1714));
-        Geolocation location1 = new Geolocation(34.0204, -84.1723);
-        service.updateAssistantLocation(assistant1, location1);
-
-        Assistant assistant2 = new Assistant("Sarah", new Geolocation(34.0214, -84.1714));
-        Geolocation location2 = new Geolocation(34.0304, -84.1725);
-        service.updateAssistantLocation(assistant2, location2);
-
+    public void testFindNearestAssistants() {
+        RoadsideAssistanceService service = new RoadsideAssistanceServiceImpl();
         Geolocation searchLocation = new Geolocation(34.0204, -84.1823);
-        int limit = 1;
-        SortedSet<Assistant> nearestAssistants = service.findNearestAssistants(searchLocation, limit);
-
-        assertEquals(limit, nearestAssistants.size());
-        assertEquals(assistant1, nearestAssistants.first());
+        Assistant assistant1 = new Assistant("David", new Geolocation(34.0197, -84.1829));
+        Assistant assistant2 = new Assistant("Sarah", new Geolocation(34.0214, -84.1714));
+        service.updateAssistantLocation(assistant1, assistant1.getLocation());
+        service.updateAssistantLocation(assistant2, assistant2.getLocation());
+        SortedSet<Assistant> assistants = service.findNearestAssistants(searchLocation, 1);
+        assertEquals(1, assistants.size());
+        assertTrue(assistants.contains(assistant1));
     }
 
     @Test
     void testReserveAssistant() {
-        Assistant assistant = new Assistant("David", new Geolocation(34.0204, -84.1714));
-        Geolocation location = new Geolocation(37.7749, -122.4194);
-        service.updateAssistantLocation(assistant, location);
-
+        Assistant assistant = new Assistant("David", new Geolocation(34.0197, -84.1829));
         Customer customer = new Customer("dave.smith@email.com", "Dave", "Smith");
-        Geolocation customerLocation = new Geolocation(34.0224, -84.1713);
+        Geolocation customerLocation = new Geolocation(34.0204, -84.1823);
+        
+        service.updateAssistantLocation(assistant, customerLocation);
         Optional<Assistant> reservedAssistant = service.reserveAssistant(customer, customerLocation);
 
         assertTrue(reservedAssistant.isPresent());
@@ -63,14 +57,12 @@ class RoadsideAssistanceServiceImplTest {
 
     @Test
     void testReleaseAssistant() {
-        Assistant assistant = new Assistant("David", new Geolocation(34.0204, -84.1714));
-        Geolocation location = new Geolocation(37.7749, -122.4194);
-        service.updateAssistantLocation(assistant, location);
-
+        Assistant assistant = new Assistant("David", new Geolocation(34.0197, -84.1829));
         Customer customer = new Customer("dave.smith@email.com", "Dave", "Smith");
-        Geolocation customerLocation = new Geolocation(37.7765, -122.4166);
+        Geolocation customerLocation = new Geolocation(34.0224, -84.1713);
+        
+        service.updateAssistantLocation(assistant, customerLocation);
         service.reserveAssistant(customer, customerLocation);
-
         service.releaseAssistant(customer, assistant);
 
         assertFalse(service.findNearestAssistants(customerLocation, 1).contains(assistant));

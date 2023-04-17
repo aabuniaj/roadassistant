@@ -1,12 +1,10 @@
 package com.geico.roadassistant.domain.assistant;
 
-import java.util.Comparator;
-
 import com.geico.roadassistant.domain.location.Geolocation;
 import lombok.Data;
 
 @Data
-public class Assistant implements Comparator<Assistant> {
+public class Assistant implements Comparable {
     private String name;
     private Geolocation location;
 
@@ -16,8 +14,11 @@ public class Assistant implements Comparator<Assistant> {
     }
 
     @Override
-    public int compare(Assistant o1, Assistant o2) {
-        throw new UnsupportedOperationException("Unimplemented method 'compare'");
+    public int compareTo(Object o) {
+        if (o instanceof Assistant) {
+            return name.compareTo(((Assistant)o).getName());
+        }
+        return 0;
     }
 }
 

@@ -24,7 +24,8 @@ public class RoadsideAssistanceServiceImpl implements RoadsideAssistanceService 
     @Override
     public SortedSet<Assistant> findNearestAssistants(Geolocation geolocation, int limit) {
         // Create a set to hold the roadside assistants ordered by distance
-        SortedSet<Assistant> assistantsByDistance = new TreeSet<>(new DistanceCalculator(geolocation));
+        Comparator<Assistant> byDistance = Comparator.comparingDouble(a -> a.getLocation().distanceTo(geolocation));
+        SortedSet<Assistant> assistantsByDistance = new TreeSet<>(byDistance);
 
         // Add all the assistants and their locations to the set
         for (Assistant assistant : assistantLocations.keySet()) {
