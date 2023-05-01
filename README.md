@@ -18,7 +18,7 @@ To use this service, you can clone this repository and import the project into y
 
 1.  Clone this repository:
 
-    git clone https://github.com/your_username/roadside-assistance-service.git
+    git clone https://github.com/aabuniaj/roadside-assistance-service.git
 
 3.  Open the project in your Java IDE or build the project using maven.
 
